@@ -5,6 +5,24 @@ def map_num(source: int, range_maps: list[tuple[int, int, int]]) -> int:
             return mapped
     return source
 
+def map_range(ranges: list[tuple[int, int]], range_maps: list[tuple[int, int, int]]) -> list[tuple[int, int]]:
+    dest_ranges = []
+
+    print(ranges, range_maps)
+
+    for source_range in ranges:
+        for range_map in range_maps:
+            if source_range[1] < range_map[0] or source_range[0] >= range_map[1]:
+                dest_ranges.append(source_range)
+            elif source_range[0] >= range_map[0] and source_range[1] <= range_map[1]:
+                dest_ranges.append((source_range[0] + range_map[2], source_range[1] + range_map[2]))
+            elif source_range[0] < range_map[0] and 1:
+                1
+    return dest_ranges
+
+
+# Range layout
+# (from, to, step)
 
 # Map nums
 # seed-soil: 0
@@ -26,44 +44,26 @@ min_seed = 1000000000000000000
 with open("./data/test.txt", "r") as file:
     data = file.read().strip().split("\n\n")
 
-    seed_ranges_str = data[0].split(":")[1].strip().split(" ")
-    print(seed_ranges_str)
+    seed_nums = [int(x) for x in data[0].split(":")[1].strip().split(" ")]
+    seed_ranges = []
+    for i, num in enumerate(seed_nums):
+        if i % 2 == 0:
+            seed_ranges.append((num, num + seed_nums[i + 1]))
 
-    i = 0
-    while i < len(seed_ranges_str):
-        map_source = int(seed_ranges_str[i])
-        map_range = int(seed_ranges_str[i + 1])
-        
-        seed_ranges.append(range(map_source, map_source + map_range))
+    mappings = [section.splitlines()[1:] for section in data[1:]]
+    for i, section in enumerate(mappings):
+        section_mappings = []
+        for mapping in section:
+            nums = [int(x) for x in mapping.split()]
+            from_map = nums[1]
+            to_map = nums[1] + nums[2]
+            step_map = nums[0] - nums[1]
 
-        i += 2
-    print(seed_ranges)
+            section_mappings.append((from_map, to_map, step_map))
+        maps[i] = section_mappings
 
-    range_maps = data[1:]
+print(maps)
+print(seed_ranges)
 
-    for i in range(len(range_maps)):
-        range_map = range_maps[i].split(":")[1].strip().splitlines()
-
-        map_parsed = []
-
-        for line in range_map:
-            map_range = tuple(map(lambda x: int(x), line.split(" ")))
-            map_parsed.append(map_range)
-        maps[i] = map_parsed
-
-def has_seed(num):
-    for seed_range in seed_ranges:
-        if num in seed_range:
-            return True
-    return False
-
-for seed_range in seed_ranges:
-    for seed in seed_range:
-        source = int(seed)
-        for i in range(len(maps)):
-            source = map_num(source, maps[i])
-        if has_seed(source) and source < min_seed:
-            min_seed = source
-
-print("min: ", min_seed)
-
+print(map_range(seed_ranges, maps[0]))
+    
