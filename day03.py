@@ -1,73 +1,62 @@
-with open('./data/day3.txt', "r") as file:
-    lines = file.read().strip().splitlines()
+with open("./data/day3.txt", "r") as file:
+    lines = file.read().splitlines()
 
-sum = 0
+number_table = {}
 
-def is_symbol(char) -> bool:
-    if char == ".":
+def is_symbol(char: str):
+    if char == "." or char.isdigit():
         return False
-    if char.isdigit():
-        return False
-
     return True
 
-def is_engine(row_index, col_idx_start, col_idx_end) -> bool:
-    col_idx_start = col_idx_start if col_idx_start == 0 else col_idx_start - 1
-    col_idx_end = col_idx_end if col_idx_end == len(lines[row_index]) else col_idx_end + 1
+for i, line in enumerate(lines):
+    print(line)
+    number_table[i] = []
+    j = 0
+    buffer = []
+    idx = []
 
-    print(row_index, col_idx_start, col_idx_end)
+    while j < len(line):
+        if line[j].isdigit():
+            if len(buffer) == 0:
+                idx.append(j)
+            buffer.append(line[j])
+        else:
+            if len(buffer) > 0:
+                idx.append(j)
+                number_table[i].append((int("".join(buffer)), idx))
+                buffer = []
+                idx = []
+        j += 1
+    if len(buffer) > 0:
+        idx.append(j)
+        number_table[i].append((int("".join(buffer)), idx))
 
-    if is_symbol(lines[row_index][col_idx_start]) or is_symbol(lines[row_index][col_idx_end]):
-        return True
+for k,v in number_table.items():
+    print(v)
+print("=" * 80)
 
-    if row_index - 1 >= 0:
-        for char in lines[row_index - 1][col_idx_start:col_idx_end + 1]:
-            if is_symbol(char):
-                return True
-    
-    if row_index + 1 < len(lines):
-        for char in lines[row_index + 1][col_idx_start:col_idx_end + 1]:
-            if is_symbol(char):
-                return True
+def get_adj_values(i, j):
+    from_j = j - 1 if j > 0 else 0
+    to_j = j + 2 if j + 1 < len(lines[i]) else j + 1
+    from_i = i - 1 if i > 0 else 0
+    to_i = i + 2 if i + 1 < len(lines) else i + 1
 
-    return False    
+    numbers = []
+
+    for i in range(from_i, to_i):
+        for j in range(from_j, to_j):
+            for number, idx in number_table[i]:
+                if j in range(idx[0], idx[1]):
+                    if (number, idx) not in numbers:
+                        numbers.append((number, idx))
+    return [number for number, _ in numbers]
+
+gear_ratios = 0
 
 for i, line in enumerate(lines):
-    print(lines[i - 1] if i > 0 else "")
-    print(line)
-    print(lines[i + 1] if i + 1 <= len(lines) - 1 else "")
-    
-    j = 0
-    while j < len(line) - 1:
-        if line[j].isdigit():
-            num = ""
-            start_idx = j
-            end_idx = None
-
-            while line[j].isdigit():
-                num += line[j]
-                if j >= len(line) - 1:
-                    break
-                j += 1
-                print("j: ", j)
-
-            end_idx = j - 1
-            print(num, end=" ")
-            if is_engine(i, start_idx, end_idx):
-                sum += int(num)
-                print("true", sum)
-            else:
-                print("false")
-        else:
-            j += 1
-        
-
-
-print(sum)
-
-
-
-
-
-
-
+    for j, char in enumerate(line):
+        if char == "*":
+            numbers = get_adj_values(i, j)
+            if len(numbers) == 2:
+                gear_ratios += numbers[0] * numbers[1]
+print(gear_ratios)
