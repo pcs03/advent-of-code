@@ -1,5 +1,3 @@
-# This solution hashes any hand value + individual character values to a hex number
-# Ranks the hands based on this hex number and then calculates the total winnings
 
 card_values = {
     "A": "C",
@@ -43,6 +41,7 @@ def get_hand_value(hand) -> str:
     else:
         j = counts.pop()
         counts = sorted(counts, reverse=True)
+        print(hand, counts)
 
         if j > 0:
             if counts[0] + j == 5:
@@ -85,5 +84,6 @@ cards = sorted(cards)
 total_winnings = 0
 
 for i, card in enumerate(cards):
+    print(i + 1, card[1])
     total_winnings += (i + 1) * card[2]
 print(total_winnings)
