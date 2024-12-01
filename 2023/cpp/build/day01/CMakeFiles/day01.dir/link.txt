@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/day01.dir/main.cpp.o -o day01  ../lib/libutils.a
