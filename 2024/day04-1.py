@@ -1,8 +1,6 @@
 with open("./data/day04.txt") as file:
     lines = list(map(list, file.read().splitlines()))
 
-print(lines)
-
 word = "XMAS"
 
 directions = {
@@ -43,9 +41,6 @@ def trace_all_directions(i, j) -> int:
     for direction in directions:
         is_word = trace_word(i, j, direction, 1)
         sum += is_word
-
-        if is_word != 0:
-            print(i, j, direction)
 
     return sum
 
