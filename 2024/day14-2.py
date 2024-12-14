@@ -1,43 +1,5 @@
 import math
-from PIL import Image, ImageDraw, ImageFont
-
-def save_grid_as_image(grid, filepath, font_path="/usr/share/fonts/noto/NotoSans-Medium.ttf", font_size=30, cell_size=40):
-    """
-    Save a grid of characters as an image.
-    
-    Args:
-        grid (list of list of str): 2D list of characters to display in the grid.
-        filepath (str): Path to save the generated image.
-        font_path (str): Path to the TTF font file. Defaults to DejaVuSans-Bold.
-        font_size (int): Font size for characters. Defaults to 30.
-        cell_size (int): Size of each cell in pixels. Defaults to 40.
-    """
-    # Calculate image dimensions
-    rows = len(grid)
-    cols = len(grid[0]) if rows > 0 else 0
-    image_width = cols * cell_size
-    image_height = rows * cell_size
-
-    # Create a blank image
-    image = Image.new("RGB", (image_width, image_height), "white")
-    draw = ImageDraw.Draw(image)
-
-    # Load the font
-    try:
-        font = ImageFont.truetype(font_path, font_size)
-    except OSError:
-        print("Font not found. Using default font.")
-        font = ImageFont.load_default()
-
-    # Draw the characters onto the image
-    for row_idx, row in enumerate(grid):
-        for col_idx, char in enumerate(row):
-            x = col_idx * cell_size + cell_size // 4
-            y = row_idx * cell_size + cell_size // 4
-            draw.text((x, y), char, font=font, fill="black")
-
-    # Save the image
-    image.save(filepath)
+from collections import Counter
 
 with open("./data/day14.txt") as file:
     lines = file.read().splitlines()
@@ -57,8 +19,29 @@ def get_future_position(row: int, col: int, d_row: int, d_col: int, seconds: int
 
     return future_col, future_row
 
+def calculate_local_entropy(char_list: list[str], window_size=3):
+    if window_size > len(char_list):
+        raise ValueError("Window size must be less than or equal to the length of the input list.")
+    
+    total_entropy = 0
+    num_windows = 0
 
-for i in [*range(2824, 20000, 103), *range(2997, 20000, 101)]:
+    # Slide over the list with the given window size
+    for i in range(len(char_list) - window_size + 1):
+        window = char_list[i:i + window_size]
+        # Calculate Shannon entropy for the current window
+        char_count = Counter(window)
+        total_chars = len(window)
+        entropy = -sum((count / total_chars) * math.log2(count / total_chars) for count in char_count.values())
+        total_entropy += entropy
+        num_windows += 1
+
+    # Average entropy over all windows
+    return total_entropy / num_windows if num_windows > 0 else 0
+
+entropy_list: list[float] = []
+
+for i in range(10000):
     future_positions: set[tuple[int, int]] = set()
     print("Seconds: ", i)
     for line in lines:
@@ -69,16 +52,23 @@ for i in [*range(2824, 20000, 103), *range(2997, 20000, 101)]:
         future_position = get_future_position(row, col, d_row, d_col, i)
         future_positions.add(future_position)
 
-    grid: list[list[str]] = []
+    grid: list[str] = []
 
     for row in range(grid_rows):
-        gridline: list[str] = []
         for col in range(grid_cols):
             if (col, row) in future_positions:
-                gridline.append("#")
+                grid.append("#")
             else:
-                gridline.append(" ")
-        grid.append(gridline)
+                grid.append(" ")
 
-    save_grid_as_image(grid, f"~/Downloads/images/grid{i}.png")
+    entropy = calculate_local_entropy(grid)
+    entropy_list.append(entropy)
+
+    print(i, entropy)
+
+lowest_entropy = min(entropy_list)
+seconds = entropy_list.index(lowest_entropy)
+print(seconds)
+
+
 
