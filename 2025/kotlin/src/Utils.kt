@@ -20,19 +20,4 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
  */
 fun Any?.println() = println(this)
 
-fun Int.quotientAndRemainder(other: Int): Pair<Int, Int> {
-    return this / other to this % other
-}
-
-fun Int.flooredQuotientAndRemainder(other: Int): Pair<Int, Int> {
-    val (q, r) = this.quotientAndRemainder(other)
-    val (q2, r2) = (r + other).quotientAndRemainder(other)
-
-    return q + q2 to r2
-}
-
 fun Int.fmod(other: Int) = ((this % other) + other) % other
-
-fun getQuotientAndRemainder(dividend: Int, divisor: Int): Pair<Int, Int> {
-    return dividend / divisor to dividend % divisor
-}

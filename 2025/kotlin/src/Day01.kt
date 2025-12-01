@@ -3,52 +3,41 @@ class Dial(startingValue: Int = 50, maxRotationValue: Int = 99) {
         private set
 
     private val dialPositionsAmount = maxRotationValue + 1
+    private val finalPositionsCounter = mutableMapOf<Int, Int>()
     private val positionsCounter = mutableMapOf<Int, Int>()
-    private var zeroClickCounter = 0
 
-    private fun incrementMapEntry(rotationValue: Int) {
-        positionsCounter[rotationValue] = positionsCounter.getOrDefault(rotationValue, 0) + 1
+    private fun incrementPositionsCounter() {
+        positionsCounter[value] = positionsCounter.getOrDefault(value, 0) + 1
     }
 
-    fun printRotationPositionsCounter() {
-        println("${positionsCounter.toSortedMap()}")
+    private fun incrementFinalPositionsCounter() {
+        finalPositionsCounter[value] = finalPositionsCounter.getOrDefault(value, 0) + 1
     }
 
     fun printState() {
         println("=== Dial State ==")
-        println("Dial position: ${this.value}")
-        println("Amount of times zero was clicked: ${this.zeroClickCounter}")
+        println("Total dial positions: ${this.positionsCounter.toSortedMap()}")
+        println("Final dial positions: ${this.finalPositionsCounter.toSortedMap()}")
     }
 
-    private fun rotateLeft(rotationValue: Int) {
-        val rotationResult = value - rotationValue
-        val newValue = rotationResult.fmod(dialPositionsAmount)
-
-        if (newValue == 0 || newValue > value) {
-            zeroClickCounter += 1
-        }
-
-        value = newValue
-        incrementMapEntry(newValue)
+    private fun rotateLeft() {
+        value = (value - 1).fmod(dialPositionsAmount)
+        incrementPositionsCounter()
     }
 
-    private fun rotateRight(rotationValue: Int) {
-        val newValue = (value + rotationValue) % dialPositionsAmount
-
-        if (newValue == 0 || newValue < value) {
-            zeroClickCounter += 1
-        }
-
-        value = newValue
-        incrementMapEntry(newValue)
+    private fun rotateRight() {
+        value = (value + 1) % dialPositionsAmount
+        incrementPositionsCounter()
     }
+
 
     fun rotate(direction: String, rotationValue: Int) {
         when (direction) {
-            "L" -> rotateLeft(rotationValue)
-            "R" -> rotateRight(rotationValue)
+            "L" -> repeat(rotationValue) { rotateLeft() }
+            "R" -> repeat(rotationValue) { rotateRight() }
             else -> throw IllegalArgumentException("direction must be 'L' or 'R'")
         }
+        incrementFinalPositionsCounter()
     }
 }
 
@@ -62,7 +51,7 @@ fun main() {
             dial.rotate(rotationDirection, rotationValue)
         }
 
-        dial.printRotationPositionsCounter()
+        dial.printState()
         return dial.value
     }
 
@@ -88,14 +77,4 @@ fun main() {
 
     part2(testInput)
     part2(input)
-
-
-    // Or read a large test input from the `src/Day01_test.txt` file:
-//    val testInput = readInput("Day01_test")
-//    check(part1(testInput) == 1)
-
-    // Read the input from the `src/Day01.txt` file.
-//    val input = readInput("Day01")
-//    part1(input).println()
-//    part2(input).println()
 }
