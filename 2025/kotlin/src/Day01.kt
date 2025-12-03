@@ -69,8 +69,8 @@ fun main() {
     }
 
 
-    val testInput = readInput("Day01_test")
-    val input = readInput("Day01")
+    val testInput = readInputLines("Day01_test")
+    val input = readInputLines("Day01")
 
     println(part1(testInput))
     println(part1(input))
