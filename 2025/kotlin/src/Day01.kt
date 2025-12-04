@@ -1,3 +1,6 @@
+import utils.fmod
+import utils.readInputToLines
+
 class Dial(startingValue: Int = 50, maxRotationValue: Int = 99) {
     var value = startingValue
         private set
@@ -69,8 +72,13 @@ fun main() {
     }
 
 
+<<<<<<< Updated upstream
     val testInput = readInputLines("Day01_test")
     val input = readInputLines("Day01")
+=======
+    val testInput = readInputToLines("Day01_test")
+    val input = readInputToLines("Day01")
+>>>>>>> Stashed changes
 
     println(part1(testInput))
     println(part1(input))
