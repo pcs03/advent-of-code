@@ -72,13 +72,8 @@ fun main() {
     }
 
 
-<<<<<<< Updated upstream
-    val testInput = readInputLines("Day01_test")
-    val input = readInputLines("Day01")
-=======
     val testInput = readInputToLines("Day01_test")
     val input = readInputToLines("Day01")
->>>>>>> Stashed changes
 
     println(part1(testInput))
     println(part1(input))
