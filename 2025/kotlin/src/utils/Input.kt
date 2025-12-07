@@ -7,14 +7,14 @@ import kotlin.io.path.readText
  * Reads from the given input txt file to lines.
  */
 fun readInputToLines(name: String, test: Boolean = false): List<String> {
-    return readInput(name, test).trim().lines()
+    return readInput(name, test).lines()
 }
 
 /**
  * Reads from the given input txt file to a String.
  */
 fun readInputToString(name: String, test: Boolean = false): String {
-    return readInput(name, test).trim()
+    return readInput(name, test)
 }
 
 /**
