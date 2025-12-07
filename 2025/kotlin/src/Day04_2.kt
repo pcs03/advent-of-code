@@ -12,7 +12,7 @@ fun main() {
 
         for (r in 0..<grid.rows) {
             for (c in 0..<grid.cols) {
-                val charAtIndex = grid.index(r, c)
+                val charAtIndex = grid.getCharacter(r, c)
                 if (charAtIndex == null || charAtIndex == '.') {
                     continue
                 }

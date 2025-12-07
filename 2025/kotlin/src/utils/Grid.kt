@@ -15,7 +15,7 @@ class AocGrid(
     /**
      * Returns the character in the grid at the given index. Returns null if index does not exist.
      */
-    fun index(row: Int, col: Int): Char? {
+    fun getCharacter(row: Int, col: Int): Char? {
         return try {
             grid[row][col]
         } catch (e: IndexOutOfBoundsException) {
@@ -24,10 +24,18 @@ class AocGrid(
     }
 
     /**
+     * Returns the character in the grid at the index as a pair of indices of row,col. Returns null if index does not exist.
+     */
+    fun getCharacter(index: Pair<Int, Int>): Char? {
+        val (row, col) = index
+        return getCharacter(row, col)
+    }
+
+    /**
      * Sets the character in the grid at the given index to the given char.
      */
     fun setIndex(row: Int, col: Int, char: Char) {
-        val charAtIndex = index(row, col)
+        val charAtIndex = getCharacter(row, col)
 
         when(charAtIndex) {
             null, char -> return
@@ -37,6 +45,9 @@ class AocGrid(
         }
     }
 
+    /**
+     * Returns all adjacent chars to the given grid index. Can return up to 8 characters.
+     */
     fun getAdjacentChars(row: Int, col: Int): List<Char> {
         val chars = mutableListOf<Char>()
 
@@ -45,10 +56,28 @@ class AocGrid(
                 if (i == row && j == col) {
                     continue
                 }
-                index(i, j)?.let { chars.add(it) }
+                getCharacter(i, j)?.let { chars.add(it) }
             }
         }
 
         return chars
+    }
+
+    /**
+     * Finds the indices of the given character in the grid.
+     */
+    fun findCharacterIndices(character: Char): List<Pair<Int, Int>> {
+        val indices = mutableListOf<Pair<Int, Int>>()
+
+        for (row in 0..<this.rows) {
+            for (col in 0..<this.cols) {
+                val characterAtIndex = getCharacter(row, col)
+                if (characterAtIndex != null && characterAtIndex == character) {
+                    indices.add(Pair(row, col))
+                }
+            }
+        }
+
+        return indices
     }
 }
