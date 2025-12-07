@@ -2,8 +2,6 @@ package utils
 
 import java.math.BigInteger
 import java.security.MessageDigest
-import kotlin.io.path.Path
-import kotlin.io.path.readText
 import kotlin.math.log10
 
 /**
@@ -27,11 +25,11 @@ fun Int.fmod(other: Int) = ((this % other) + other) % other
 /**
  * Takes the floored modulo of the integer.
  */
-fun Long.numDigits() = log10(this.toDouble()).toInt() + 1
+fun Long.length() = log10(this.toDouble()).toInt() + 1
 
 
 fun Long.subDigits(start: Int, end: Int): Long {
-    val length = this.numDigits()
+    val length = this.length()
     val rightShift = length - end
     val leftPow = powersOf10[end - start]
     val rightPow = powersOf10[rightShift]
